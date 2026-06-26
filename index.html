@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Goa Logbook — 9–13 July</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ============ GRAIN / TEXTURE OVERLAY ============ -->
+<div class="grain-overlay" aria-hidden="true"></div>
+
+<!-- ============ FIXED NAV ============ -->
+<nav class="nav" id="nav">
+  <div class="nav-inner">
+    <span class="nav-mark">GOA / 26</span>
+    <div class="nav-links">
+      <a href="#hero" class="nav-link">Start</a>
+      <a href="#day-1" class="nav-link">Logbook</a>
+      <a href="#map-section" class="nav-link">Route</a>
+      <a href="#budget" class="nav-link">Budget</a>
+    </div>
+    <span class="nav-progress-label" id="navProgressLabel">Mile 0</span>
+  </div>
+  <div class="nav-progress-track"><div class="nav-progress-fill" id="navProgressFill"></div></div>
+</nav>
+
+<!-- ============ THE ROAD (single continuous SVG spine) ============ -->
+<svg class="road-svg" id="roadSvg" viewBox="0 0 1000 9000" preserveAspectRatio="none" aria-hidden="true">
+  <defs>
+    <linearGradient id="roadFade" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#3a2f28"/>
+      <stop offset="1" stop-color="#1b3a4b"/>
+    </linearGradient>
+  </defs>
+  <path id="roadPath" d="" stroke="url(#roadFade)" stroke-width="34" fill="none" stroke-linecap="round"/>
+  <path id="roadDash" d="" stroke="#F5EFE3" stroke-width="2.5" fill="none" stroke-dasharray="14 18" stroke-linecap="round" opacity="0.55"/>
+</svg>
+<div class="road-vehicle" id="roadVehicle">🚗</div>
+
+<!-- ============ HERO ============ -->
+<header class="hero" id="hero">
+  <div class="hero-bg">
+    <img src="https://source.unsplash.com/2400x1400/?goa,beach,aerial" alt="" class="hero-img" id="heroImg">
+    <div class="hero-veil"></div>
+    <div class="hero-clouds" aria-hidden="true">
+      <span class="cloud cloud-a"></span>
+      <span class="cloud cloud-b"></span>
+      <span class="cloud cloud-c"></span>
+    </div>
+    <div class="hero-palms" aria-hidden="true">
+      <span class="leaf leaf-1">🌴</span>
+      <span class="leaf leaf-2">🌴</span>
+    </div>
+    <svg class="hero-waves" viewBox="0 0 1440 200" preserveAspectRatio="none" aria-hidden="true">
+      <path class="wave wave-1" d="M0,80 C240,140 480,20 720,80 C960,140 1200,20 1440,80 L1440,200 L0,200 Z"/>
+      <path class="wave wave-2" d="M0,100 C240,40 480,160 720,100 C960,40 1200,160 1440,100 L1440,200 L0,200 Z"/>
+    </svg>
+  </div>
+
+  <div class="hero-content">
+    <p class="hero-eyebrow">A FIVE-DAY LOGBOOK · LAT 15.4N, LON 73.8E</p>
+    <h1 class="hero-title">GOA<br><span class="hero-title-accent">TRIP</span> 2026</h1>
+    <p class="hero-sub">9 — 13 July · ₹10,000 / head · north to south, by scooter</p>
+    <a href="#day-1" class="hero-cta">
+      <span>Start the drive</span>
+      <span class="hero-cta-arrow">↓</span>
+    </a>
+  </div>
+
+  <div class="scroll-indicator" aria-hidden="true">
+    <span class="scroll-line"></span>
+    <span class="scroll-text">SCROLL</span>
+  </div>
+</header>
+
+<!-- ============ TIMELINE RAIL (fixed, desktop only) ============ -->
+<aside class="day-rail" id="dayRail" aria-label="Trip days">
+  <div class="day-rail-track">
+    <a href="#day-1" class="day-rail-stop" data-day="1"><span class="day-rail-num">01</span><span class="day-rail-name">North Goa</span></a>
+    <a href="#day-2" class="day-rail-stop" data-day="2"><span class="day-rail-num">02</span><span class="day-rail-name">Dudhsagar</span></a>
+    <a href="#day-3" class="day-rail-stop" data-day="3"><span class="day-rail-num">03</span><span class="day-rail-name">South Goa</span></a>
+    <a href="#day-4" class="day-rail-stop" data-day="4"><span class="day-rail-num">04</span><span class="day-rail-name">Agonda</span></a>
+    <a href="#day-5" class="day-rail-stop" data-day="5"><span class="day-rail-num">05</span><span class="day-rail-name">Baga</span></a>
+  </div>
+</aside>
+
+<main>
+
+<!-- ============ DAY 1 ============ -->
+<section class="day-section" id="day-1" data-day="1" data-theme="dusk">
+  <div class="day-bg-image">
+    <img src="https://source.unsplash.com/1600x1000/?goa,cliff,sunset" alt="North Goa coastline at sunset" loading="lazy">
+  </div>
+  <div class="day-content reveal slide-right">
+    <div class="day-marker">
+      <span class="day-marker-num">MILE 01</span>
+      <span class="day-marker-date">9 JULY</span>
+    </div>
+    <h2 class="day-title">North Goa<span class="day-title-sub">Settling in, chasing the sunset</span></h2>
+    <p class="day-desc">Land, dump the bags, and let the scooter find its legs on Parra Road before the day folds into a long, orange evening at Thalassa.</p>
+
+    <div class="day-timeline">
+      <div class="tl-row reveal fade-up">
+        <span class="tl-time">MORNING</span>
+        <span class="tl-event">Check in to North Goa stay, settle, first scooter ride down <strong>Parra Road</strong></span>
+      </div>
+      <div class="tl-row reveal fade-up">
+        <span class="tl-time">MORNING</span>
+        <span class="tl-event">Breakfast stop at <strong>St. Anthony's Bakery</strong> — local bread, quiet roadside charm</span>
+      </div>
+      <div class="tl-row reveal fade-up">
+        <span class="tl-time">AFTERNOON</span>
+        <span class="tl-event">Quiet visit to the <strong>Immaculate Conception Church</strong> — whitewashed, hilltop, unhurried</span>
+      </div>
+      <div class="tl-row reveal fade-up">
+        <span class="tl-time">EVENING</span>
+        <span class="tl-event">Sundowner at <strong>Thalassa</strong> — best sunset table on this stretch of coast</span>
+      </div>
+      <div class="tl-row reveal fade-up">
+        <span class="tl-time">NIGHT</span>
+        <span class="tl-event">Night cruise on the Mandovi — lights, music, water</span>
+      </div>
+    </div>
+
+    <div class="day-places">
+      <span class="chip">📍 Parra Road</span>
+      <span class="chip">🥐 St. Anthony's Bakery</span>
+      <span class="chip">⛪ Immaculate Conception Church</span>
+      <span class="chip">🌅 Thalassa</span>
+      <span class="chip">🚤 Night Cruise</span>
+    </div>
+
+    <div class="day-budget-tag"><span class="dbt-label">Day 1 spend</span><span class="dbt-amt" data-count="2200">₹0</span></div>
+  </div>
+
+  <div class="day-gallery-grid reveal zoom">
+    <figure class="gallery-item">
+      <img src="https://source.unsplash.com/800x800/?goa,coconut,road" alt="Coconut-lined road in North Goa" loading="lazy">
+      <figcaption>Parra Road</figcaption>
+    </figure>
+    <figure class="gallery-item">
+      <img src="https://source.unsplash.com/800x800/?bakery,bread,rustic" alt="Local Goan bakery" loading="lazy">
+      <figcaption>St. Anthony's Bakery</figcaption>
+    </figure>
+    <figure class="gallery-item">
+      <img src="https://source.unsplash.com/800x800/?goa,church,whitewashed" alt="Whitewashed Goan church" loading="lazy">
+      <figcaption>Immaculate Conception Church</figcaption>
+    </figure>
+    <figure class="gallery-item">
+      <img src="https://source.unsplash.com/800x800/?goa,cliff,sunset,restaurant" alt="Cliffside sunset dining spot" loading="lazy">
+      <figcaption>Thalassa, golden hour</figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- ============ DAY 2 ============ -->
+<section class="day-section" id="day-2" data-day="2" data-theme="waterfall">
+  <div class="day-bg-image">
+    <img src="https://source.unsplash.com/1600x1000/?dudhsagar,waterfall,india" alt="Dudhsagar Waterfall" loading="lazy">
+  </div>
+  <div class="day-content reveal slide-left">
+    <div class="day-marker">
+      <span class="day-marker-num">MILE 02</span>
+      <span class="day-marker-date">10 JULY</span>
+    </div>
+    <h2 class="day-title">Dudhsagar<span class="day-title-sub">The one full adventure day</span></h2>
+    <p class="day-desc">Four hundred metres of falling water, a jeep track that rattles every bone, and a swim that earns every bruise on the way there.</p>
+
+    <div class="day-timeline">
+      <div class="tl-row reveal fade-up">
+        <span class="tl-time">MORNING</span>
+        <span class="tl-event">Early start, drive toward the Western Ghats</span>
+      </div>
+      <div class="tl-row reveal fade-up">
+        <span class="tl-time">MIDDAY</span>
+        <span class="tl-event"><strong>Jeep safari</strong> through Mollem forest to the base of <strong>Dudhsagar Falls</strong></span>
+      </div>
+      <div class="tl-row reveal fade-up">
+        <span class="tl-time">AFTERNOON</span>
+        <span class="tl-event">Swim in the falls' plunge pool — cold, loud, worth it</span>
+      </div>
+      <div class="tl-row reveal fade-up">
+        <span class="tl-time">EVENING</span>
+        <span class="tl-event">Jeep back, return to North Goa before dark</span>
+      </div>
+    </div>
+
+    <div class="day-places">
+      <span class="chip">💧 Dudhsagar Falls</span>
+      <span class="chip">🚙 Jeep Safari</span>
+      <span class="chip">🏊 Swimming</span>
+    </div>
+
+    <div class="day-budget-tag"><span class="dbt-label">Day 2 spend</span><span class="dbt-amt" data-count="1800">₹0</span></div>
+  </div>
+
+  <div class="day-gallery-grid reveal zoom">
+    <figure class="gallery-item">
+      <img src="https://source.unsplash.com/800x800/?dudhsagar,waterfall" alt="Dudhsagar Falls" loading="lazy">
+      <figcaption>Dudhsagar Falls</figcaption>
+    </figure>
+    <figure class="gallery-item">
+      <img src="https://source.unsplash.com/800x800/?jeep,offroad,forest" alt="Jeep safari through forest" loading="lazy">
+      <figcaption>The jeep track in, Mollem</figcaption>
+    </figure>
+    <figure class="gallery-item">
+      <img src="https://source.unsplash.com/800x800/?waterfall,swimming,pool" alt="Swimming at the waterfall pool" loading="lazy">
+      <figcaption>The plunge pool</figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- ============ DAY 3 ============ -->
+<section class="day-section" id="day-3" data-day="3" data-theme="lagoon">
+  <div class="day-bg-image">
+    <img src="https://source.unsplash.com/1600x1000/?lagoon,tropical,beach" alt="South Goa lagoon coast" loading="lazy">
+  </div>
+  <div class="day-content reveal slide-right">
+    <div class="day-marker">
+      <span class="day-marker-num">MILE 03</span>
+      <span class="day-marker-date">11 JULY</span>
+    </div>
+    <h2 class="day-title">South Goa<span class="day-title-sub">Forts, lagoons, and a paddle</span></h2>
+    <p class="day-desc">The coast turns quiet and green here. A clifftop fort, a hidden lagoon, and the one stretch of sand worth doing nothing on.</p>
+
+    <div class="day-timeline">
+      <div class="tl-row reveal fade-up">
+        <span class="tl-time">MORNING</span>
+        <span class="tl-event"><strong>Cabo de Rama Fort</strong> — cliff views, old Portuguese stone</span>
+      </div>
+      <div class="tl-row reveal fade-up">
+        <span class="tl-time">AFTERNOON</span>
+        <span class="tl-event">🛶 <strong>Kayaking at Cola Beach</strong> lagoon</span>
+      </div>
+      <div class="tl-row reveal fade-up">
+        <span class="tl-time">LATE AFTERNOON</span>
+        <span class="tl-event">Walk over to <strong>Butterfly Beach</strong>, reachable only by boat or trail</span>
+      </div>
+      <div class="tl-row reveal fade-up">
+        <span class="tl-time">EVENING</span>
+        <span class="tl-event">Drive back up the coast as the light drops</span>
+      </div>
+    </div>
+
+    <div class="callout-card reveal fade-up">
+      <span class="callout-label">WHY COLA, NOT AGONDA, FOR KAYAKING</span>
+      <ul class="callout-list">
+        <li>Calm, enclosed lagoon — flat water, easy paddling</li>
+        <li>Scenery does the work: palm-backed cliffs on both sides</li>
+        <li>Far better photos than the open beach at Agonda</li>
+        <li>Noticeably less crowded, even in season</li>
+      </ul>
+    </div>
+
+    <div class="day-places">
+      <span class="chip">🏰 Cabo de Rama Fort</span>
+      <span class="chip">🛶 Cola Beach</span>
+      <span class="chip">🦋 Butterfly Beach</span>
+    </div>
+
+    <div class="day-budget-tag"><span class="dbt-label">Day 3 spend</span><span class="dbt-amt" data-count="1600">₹0</span></div>
+  </div>
+
+  <div class="day-gallery-grid reveal zoom">
+    <figure class="gallery-item">
+      <img src="https://source.unsplash.com/800x800/?fort,cliff,coast" alt="Cabo de Rama Fort" loading="lazy">
+      <figcaption>Cabo de Rama Fort</figcaption>
+    </figure>
+    <figure class="gallery-item">
+      <img src="https://source.unsplash.com/800x800/?lagoon,kayak,tropical" alt="Kayaking at a calm lagoon" loading="lazy">
+      <figcaption>Cola Beach lagoon, calm water</figcaption>
+    </figure>
+    <figure class="gallery-item">
+      <img src="https://source.unsplash.com/800x800/?secluded,beach,cove,palm" alt="Secluded cove beach" loading="lazy">
+      <figcaption>Butterfly Beach</figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- ============ DAY 4 ============ -->
+<section class="day-section" id="day-4" data-day="4" data-theme="night">
+  <div class="day-bg-image">
+    <img src="https://source.unsplash.com/1600x1000/?goa,beach,sunset,shack" alt="Agonda Beach at dusk" loading="lazy">
+  </div>
+  <div class="day-content reveal slide-left">
+    <div class="day-marker">
+      <span class="day-marker-num">MILE 04</span>
+      <span class="day-marker-date">12 JULY</span>
+    </div>
+    <h2 class="day-title">Agonda<span class="day-title-sub">A slow beach, then the lights come on</span></h2>
+    <p class="day-desc">A full day of doing very little, on purpose — then Agonda quietly switches over to its other self after dark.</p>
+
+    <div class="day-timeline">
+      <div class="tl-row reveal fade-up">
+        <span class="tl-time">DAY</span>
+        <span class="tl-event">Long, slow stretch at <strong>Agonda Beach</strong> — no plans, just sand</span>
+      </div>
+      <div class="tl-row reveal fade-up">
+        <span class="tl-time">EVENING</span>
+        <span class="tl-event">Sunset from the shack, drinks in hand</span>
+      </div>
+      <div class="tl-row reveal fade-up">
+        <span class="tl-time">NIGHT</span>
+        <span class="tl-event"><strong>Hammerzz</strong> nightclub <em>(optional, if legs survive Dudhsagar)</em></span>
+      </div>
+    </div>
+
+    <div class="day-places">
+      <span class="chip">🏖️ Agonda Beach</span>
+      <span class="chip">🌇 Sunset</span>
+      <span class="chip">🎶 Hammerzz</span>
+    </div>
+
+    <div class="day-budget-tag"><span class="dbt-label">Day 4 spend</span><span class="dbt-amt" data-count="1500">₹0</span></div>
+  </div>
+
+  <div class="day-gallery-grid reveal zoom">
+    <figure class="gallery-item">
+      <img src="https://source.unsplash.com/800x800/?goa,beach,palm" alt="Agonda Beach by day" loading="lazy">
+      <figcaption>Agonda Beach</figcaption>
+    </figure>
+    <figure class="gallery-item">
+      <img src="https://source.unsplash.com/800x800/?beach,shack,sunset,drinks" alt="Sunset beach shack" loading="lazy">
+      <figcaption>Agonda, last light</figcaption>
+    </figure>
+    <figure class="gallery-item">
+      <img src="https://source.unsplash.com/800x800/?nightclub,lights,party" alt="Nightclub lights" loading="lazy">
+      <figcaption>Hammerzz, after dark</figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- ============ DAY 5 ============ -->
+<section class="day-section day-section-final" id="day-5" data-day="5" data-theme="farewell">
+  <div class="day-bg-image">
+    <img src="https://source.unsplash.com/1600x1000/?goa,beach,watersports" alt="Baga Beach" loading="lazy">
+  </div>
+  <div class="day-content reveal slide-right">
+    <div class="day-marker">
+      <span class="day-marker-num">MILE 05</span>
+      <span class="day-marker-date">13 JULY</span>
+    </div>
+    <h2 class="day-title">Baga<span class="day-title-sub">One last beach, then home</span></h2>
+    <p class="day-desc">The loudest beach saved for last — water sports, lunch with sand still on your feet, a bit of shopping, and the drive back.</p>
+
+    <div class="day-timeline">
+      <div class="tl-row reveal fade-up">
+        <span class="tl-time">MORNING</span>
+        <span class="tl-event"><strong>Baga Beach</strong> — water sports, one last swim</span>
+      </div>
+      <div class="tl-row reveal fade-up">
+        <span class="tl-time">MIDDAY</span>
+        <span class="tl-event">Lunch by the water, then a pass through the market stalls</span>
+      </div>
+      <div class="tl-row reveal fade-up">
+        <span class="tl-time">AFTERNOON</span>
+        <span class="tl-event">Return journey begins</span>
+      </div>
+    </div>
+
+    <div class="day-places">
+      <span class="chip">🏖️ Baga Beach</span>
+      <span class="chip">🛍️ Shopping</span>
+      <span class="chip">🏄 Water Sports</span>
+    </div>
+
+    <div class="day-budget-tag"><span class="dbt-label">Day 5 spend</span><span class="dbt-amt" data-count="1400">₹0</span></div>
+  </div>
+
+  <div class="day-gallery-grid reveal zoom">
+    <figure class="gallery-item">
+      <img src="https://source.unsplash.com/800x800/?jetski,watersports,beach" alt="Baga Beach watersports" loading="lazy">
+      <figcaption>Baga, the last morning</figcaption>
+    </figure>
+    <figure class="gallery-item">
+      <img src="https://source.unsplash.com/800x800/?goa,market,stalls" alt="Beachside market stalls" loading="lazy">
+      <figcaption>Market stalls, midday</figcaption>
+    </figure>
+    <figure class="gallery-item">
+      <img src="https://source.unsplash.com/800x800/?goa,beach,golden,hour" alt="Final beach afternoon" loading="lazy">
+      <figcaption>One last look back</figcaption>
+    </figure>
+  </div>
+
+  <div class="farewell-note reveal fade-up">
+    <p>End of the road. ✌️ — five days, five miles, one tank of fuel at a time.</p>
+  </div>
+</section>
+
+<!-- ============ BUDGET ============ -->
+<section class="budget-section" id="budget">
+  <div class="section-head reveal fade-up">
+    <span class="section-eyebrow">THE NUMBERS</span>
+    <h2 class="section-title">Budget Ledger</h2>
+    <p class="section-lede">Per person, five days, everything included.</p>
+  </div>
+
+  <div class="budget-grid reveal fade-up">
+    <div class="budget-row"><span>Hotel (4 nights, shared)</span><span class="b-amt">₹2,400</span></div>
+    <div class="budget-row"><span>Food</span><span class="b-amt">₹1,800</span></div>
+    <div class="budget-row"><span>Scooter rental</span><span class="b-amt">₹1,000</span></div>
+    <div class="budget-row"><span>Fuel</span><span class="b-amt">₹700</span></div>
+    <div class="budget-row"><span>Kayaking — Cola Beach</span><span class="b-amt">₹600</span></div>
+    <div class="budget-row"><span>Dudhsagar jeep safari</span><span class="b-amt">₹1,200</span></div>
+    <div class="budget-row"><span>Night cruise</span><span class="b-amt">₹800</span></div>
+    <div class="budget-row"><span>Shopping &amp; extras</span><span class="b-amt">₹1,500</span></div>
+    <div class="budget-row budget-total"><span>Total / person</span><span class="b-amt" data-count="10000">₹0</span></div>
+  </div>
+</section>
+
+<!-- ============ MAP ============ -->
+<section class="map-section" id="map-section">
+  <div class="section-head reveal fade-up">
+    <span class="section-eyebrow">THE ROUTE</span>
+    <h2 class="section-title">North to South</h2>
+    <p class="section-lede">Every stop, in order. Tap a pin for navigation.</p>
+  </div>
+  <div id="goaMap" class="goa-map reveal zoom"></div>
+</section>
+
+<!-- ============ WEATHER + PACKING ============ -->
+<section class="info-section">
+  <div class="info-grid">
+    <div class="weather-card reveal fade-up">
+      <span class="card-eyebrow">CONDITIONS</span>
+      <h3>July in Goa</h3>
+      <div class="weather-stats">
+        <div class="ws-item"><span class="ws-val">26–30°</span><span class="ws-lab">Temp (°C)</span></div>
+        <div class="ws-item"><span class="ws-val">High</span><span class="ws-lab">Rain odds</span></div>
+        <div class="ws-item"><span class="ws-val">85%</span><span class="ws-lab">Humidity</span></div>
+      </div>
+      <p class="weather-tip">Peak monsoon. Warm, wet, dramatic skies — pack like it'll pour every afternoon, because it might.</p>
+    </div>
+
+    <div class="checklist-card reveal fade-up">
+      <span class="card-eyebrow">PACKING</span>
+      <h3>Before You Leave</h3>
+      <ul class="checklist" id="packingList">
+        <li><label><input type="checkbox"><span>Raincoat</span></label></li>
+        <li><label><input type="checkbox"><span>Umbrella</span></label></li>
+        <li><label><input type="checkbox"><span>Power bank</span></label></li>
+        <li><label><input type="checkbox"><span>Sunglasses</span></label></li>
+        <li><label><input type="checkbox"><span>Waterproof bag</span></label></li>
+        <li><label><input type="checkbox"><span>Extra clothes</span></label></li>
+        <li><label><input type="checkbox"><span>Slippers</span></label></li>
+        <li><label><input type="checkbox"><span>Camera</span></label></li>
+      </ul>
+      <div class="checklist-progress"><div class="cp-fill" id="checklistFill"></div></div>
+      <span class="checklist-count" id="checklistCount">0 / 8 packed</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TRAVEL TIPS ============ -->
+<section class="tips-section">
+  <div class="section-head reveal fade-up">
+    <span class="section-eyebrow">FIELD NOTES</span>
+    <h2 class="section-title">Best Of, By Category</h2>
+  </div>
+  <div class="tips-grid">
+    <div class="tip-card reveal fade-up"><span class="tip-icon">🛶</span><span class="tip-cat">Best Kayaking</span><span class="tip-ans">Cola Beach</span></div>
+    <div class="tip-card reveal fade-up"><span class="tip-icon">🌅</span><span class="tip-cat">Best Sunset</span><span class="tip-ans">Thalassa</span></div>
+    <div class="tip-card reveal fade-up"><span class="tip-icon">🎶</span><span class="tip-cat">Best Nightlife</span><span class="tip-ans">Hammerzz</span></div>
+    <div class="tip-card reveal fade-up"><span class="tip-icon">💧</span><span class="tip-cat">Best Waterfall</span><span class="tip-ans">Dudhsagar</span></div>
+    <div class="tip-card reveal fade-up"><span class="tip-icon">🦋</span><span class="tip-cat">Best Beach</span><span class="tip-ans">Butterfly Beach</span></div>
+  </div>
+</section>
+
+</main>
+
+<!-- ============ FOOTER ============ -->
+<footer class="footer">
+  <svg class="footer-wave" viewBox="0 0 1440 120" preserveAspectRatio="none" aria-hidden="true">
+    <path class="footer-wave-path" d="M0,60 C240,110 480,10 720,60 C960,110 1200,10 1440,60 L1440,120 L0,120 Z"/>
+  </svg>
+  <div class="footer-inner">
+    <p class="footer-mark">GOA / 9–13 JULY</p>
+    <p class="footer-line">Made for one good trip. Have a great journey. ✌️</p>
+  </div>
+</footer>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
